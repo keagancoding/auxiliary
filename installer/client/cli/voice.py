@@ -5,18 +5,22 @@ import os
 import sys
 from elevenlabs.client import ElevenLabs
 from elevenlabs import stream, VoiceSettings, Voice
+from dotenv import load_dotenv
 
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+env_file = os.path.expanduser("~/.config/auxiliary/.env")
+load_dotenv(env_file)
 
-if not ELEVENLABS_API_KEY:
-    print("Please set the ELEVENLABS_API_KEY environment variable.")
+client = None
+try: 
+    client = ElevenLabs(
+        api_key=os.environ["ELEVENLABS_API_KEY"],
+    )
+except:
+    print("Please set up your ElevenLabs API key.")
     sys.exit()
 
-client = ElevenLabs(
-    api_key=ELEVENLABS_API_KEY,
-)
-
 def speak(text):
+
     audio_stream = client.generate(
         text=text,
         stream=True,

@@ -8,7 +8,7 @@ script_directory = os.path.dirname(os.path.realpath(__file__))
 
 def main():
     parser = argparse.ArgumentParser(
-        description="An open source AI personal assistant."
+        description="An open source AI personal assistant named Auxiliary."
     )
 
     parser.add_argument("--setup", "-s", help="Set up your auxiliary assistant.", action="store_true")

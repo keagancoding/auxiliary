@@ -57,17 +57,6 @@ class Setup:
                 f.write(sourceLine)
 
     def api_key(self, api_key):
-        """        Set the OpenAI API key in the environment file.
-
-        Args:
-            api_key (str): The API key to be set.
-
-        Returns:
-            None
-
-        Raises:
-            OSError: If the environment file does not exist or cannot be accessed.
-        """
         api_key = api_key.strip()
         if not os.path.exists(self.env_file) and api_key:
             with open(self.env_file, "w") as f:
@@ -121,6 +110,10 @@ class Setup:
             "Please enter your Groq API key. If you do not have one or if you have already entered it, press enter.\n")
         self.groq_key(groqkey)
 
+        elevenlabskey = input(
+            "Please enter your ElevenLabs API key. If you do not have one or if you have already entered it, press enter.\n")
+        self.elevenlabs_key(elevenlabskey)
+        
         self.update_shconfigs()
         self.__ensure_env_file_created()
 
