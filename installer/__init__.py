@@ -1,0 +1,1 @@
+from .client.cli import main as cli

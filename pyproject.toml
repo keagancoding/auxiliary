@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "auxiliary"
+version = "0.0.1"
+description = "Auxiliary - your AI assistant your way"
+authors = ["Keagan Roach <https://github.com/keagancoding>"]
+
+packages = [
+    { include = "installer"}
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+ollama = "^0.2.0"
+pyperclip = "^1.8.2"
+openai = "^1.31.0"
+python-dotenv = "^1.0.1"
+elevenlabs = "^1.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# Creates python "binaries"
+[tool.poetry.scripts]
+auxiliary = 'installer:cli'
