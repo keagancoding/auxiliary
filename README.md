@@ -33,12 +33,35 @@ git clone https://github.com/keagancoding/auxiliary.git
 # to install deps and setup
 bun install
 bun start --setup
-
-# to run
-bun start
 ```
 
 This will take you through the setup process to add your api keys for openai, gemini, and serper. And ask if you want to set up an alias (alias does not work on windows)
+
+To get running you can run a few commands depending on if you set up alias or not. If you have not set up alias you will have to be in the project directory to start up
+
+### Without alias
+
+```bash
+# start from directory
+# this will enter chat mode
+bun start
+
+# this will just ask a single question without <>
+# without entering chat mode
+bun start <then your prompt>
+```
+
+### With alias
+
+```bash
+# either of these will enter chat mode
+aux
+auxiliary
+
+# either of these will be a single question without <>
+aux <then your prompt>
+auxiliary <then your prompt>
+```
 
 ## Customization
 
