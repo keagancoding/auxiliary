@@ -20,18 +20,25 @@ He works by taking in a users prompt with knowlege of the tools he has access to
 
 ## Installation
 
-```bash
-git clone
+You will need 3 api keys handy before starting to run this assistant.
 
+- [Open AI](https://platform.openai.com/api-keys)
+- [Gemini](https://aistudio.google.com/app/apikey)
+- [Serper](https://serper.dev/api-key)
+
+```bash
+# clone repo
+git clone https://github.com/keagancoding/auxiliary.git
+
+# to install deps and setup
 bun install
 bun start --setup
+
+# to run
+bun start
 ```
 
-This will take you through the setup process to add your api keys for openai, gemini, and serper. And ask if you want to set up an alias.
-
-- Openai is the brain of auxiliary
-- Gemini is the imagle analysis
-- Serper is the web search engine
+This will take you through the setup process to add your api keys for openai, gemini, and serper. And ask if you want to set up an alias (alias does not work on windows)
 
 ## Customization
 
