@@ -1,3 +1,4 @@
+import type { CoreMessage } from "ai";
 import { Database } from "bun:sqlite";
 
 import chalk from "chalk";
@@ -5,7 +6,7 @@ import inquirer from "inquirer";
 
 export class Chat {
     enable_history: boolean
-    messages: { role: string, content: string }[]
+    messages: CoreMessage[]
     private db: Database | undefined
     constructor(enable_history: boolean = false) {
         this.enable_history = enable_history
@@ -14,13 +15,9 @@ export class Chat {
         this._load_history()
     }
 
-    clearHistory() {
-        this.db?.run("DELETE FROM messages");
-    }
-
     addMessage({ role, content }: { role: string, content: string }) {
         this._storeMessage({ role, content })
-        this.messages.push({ role, content })
+        this.messages.push({ role, content } as CoreMessage)
     }
 
     input = async (system = false, prompt?: string) => {
