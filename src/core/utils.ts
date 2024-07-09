@@ -1,9 +1,78 @@
+import type { CoreMessage } from "ai";
+import { Database } from "bun:sqlite";
+import chalk from "chalk";
+import inquirer from "inquirer";
 import { mkdir, appendFile } from "node:fs/promises";
 import { readFileSync } from 'node:fs';
 import { parse } from 'node:path';
 
-import inquirer from "inquirer";
-import chalk from "chalk";
+const connectDatabase = () => {
+    try {
+        let db = new Database(`${process.env.HOME}/.config/auxiliary/storage/history.sqlite`, { create: true })
+
+        db.run(`
+            CREATE TABLE IF NOT EXISTS messages (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              content TEXT,
+              role TEXT
+            )
+        `);
+
+        return db
+    } catch (_) {
+        console.log(`${chalk.redBright('[Auxiliary]')} Chat history not found. Please run with '--setup'`);
+        process.exit(0);
+    }
+}
+
+export const loadChatHistory = () => {
+    const db = connectDatabase()
+    const query = db?.query("SELECT * FROM messages ORDER BY id DESC");
+    const results = query?.all() as { role: string, content: string }[]
+
+    return results as CoreMessage[]
+}
+
+export const saveChatHistory = (messages: CoreMessage[]) => {
+    const db = connectDatabase()
+
+    for (const message of messages) {
+        db?.run("INSERT INTO messages (content, role) VALUES (?, ?)", message.content, message.role)
+    }
+}
+
+export const saveChatMessage = (message: CoreMessage) => {
+    const db = connectDatabase()
+    db?.run("INSERT INTO messages (content, role) VALUES (?, ?)", message.content, message.role)
+}
+
+export const clearChatHistory = () => {
+    const db = connectDatabase()
+    db?.run("DELETE FROM messages")
+}
+
+export const chatInput = async (prompt?: string) => {
+    const { input } = await inquirer.prompt([
+        {
+            name: "input",
+            type: "input",
+            message: `${chalk.blue(prompt ? `[Aux]` : '[You]')}${prompt ? ` ${prompt}: ` : ':'}`,
+            validate: (input) => {
+                return input.length > 0
+            }
+        }
+    ])
+
+    return input
+}
+
+export const chatOutput = (message: string, error: boolean = false) => {
+    if (error) {
+        console.log(`${chalk.redBright('[Aux]')} ${message}`)
+    } else {
+        console.log(`${chalk.greenBright('[Aux]')} ${message}`)
+    }
+}
 
 export const setup = async () => {
     const configPath = `${process.env.HOME}/.config/auxiliary`
