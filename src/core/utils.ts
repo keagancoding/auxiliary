@@ -6,9 +6,9 @@ import { mkdir, appendFile } from "node:fs/promises";
 import { readFileSync } from 'node:fs';
 import { parse } from 'node:path';
 
-const connectDatabase = () => {
+export const connectDatabase = () => {
     try {
-        let db = new Database(`${process.env.HOME}/.config/auxiliary/storage/history.sqlite`, { create: true })
+        let db = new Database(`${process.env.HOME}/.config/auxiliary/storage/history.sqlite`, { create: true });
 
         db.run(`
             CREATE TABLE IF NOT EXISTS messages (
@@ -25,28 +25,7 @@ const connectDatabase = () => {
     }
 }
 
-export const loadChatHistory = () => {
-    const db = connectDatabase()
-    const query = db?.query("SELECT * FROM messages ORDER BY id DESC");
-    const results = query?.all() as { role: string, content: string }[]
-
-    return results as CoreMessage[]
-}
-
-export const saveChatHistory = (messages: CoreMessage[]) => {
-    const db = connectDatabase()
-
-    for (const message of messages) {
-        db?.run("INSERT INTO messages (content, role) VALUES (?, ?)", message.content, message.role)
-    }
-}
-
-export const saveChatMessage = (message: CoreMessage) => {
-    const db = connectDatabase()
-    db?.run("INSERT INTO messages (content, role) VALUES (?, ?)", message.content, message.role)
-}
-
-export const clearChatHistory = () => {
+export const clearMessages = () => {
     const db = connectDatabase()
     db?.run("DELETE FROM messages")
 }

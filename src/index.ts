@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { attachEnvironment, chatOutput, clearChatHistory, setup } from "./core/utils";
+import { attachEnvironment, chatOutput, clearMessages, setup } from "./core/utils";
 import chalk from "chalk";
 
 import { Auxiliary } from "@/core/auxiliary";
@@ -18,7 +18,7 @@ const main = async () => {
         }
 
         if (options.clear) {
-            clearChatHistory()
+            clearMessages()
             chatOutput('Chat history cleared.')
             process.exit(0);
         }
@@ -39,9 +39,9 @@ const main = async () => {
             }
         }
     })
-        .option('-c, --clear', 'clear chat history')
         .option('-s, --setup', 'setup')
-        .option('-H, --history', 'disable chat history to save usage cost')
+        .option('-c, --clear', 'clear chat all history')
+        .option('-H, --history', 'disable long term chat history to save usage cost')
         .option('-v, --voice', 'use voice')
 
     program.parse();
