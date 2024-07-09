@@ -13,7 +13,7 @@ const main = async () => {
     program.argument('[input...]').action(async (input, options) => {
         if (options.setup) {
             await setup()
-            chatOutput('Setup complete.')
+            chatOutput('Setup complete. Please restart your terminal if you set up the alias.')
             process.exit(0);
         }
 

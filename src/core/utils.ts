@@ -76,7 +76,7 @@ export const chatOutput = (message: string, error: boolean = false) => {
 
 export const setup = async () => {
     const configPath = `${process.env.HOME}/.config/auxiliary`
-    const { openai_key, gemini_key, serper_api_key, make_alias } = await inquirer.prompt([
+    const { openai_key, gemini_key, serper_api_key } = await inquirer.prompt([
         {
             name: "openai_key",
             type: "input",
@@ -101,14 +101,6 @@ export const setup = async () => {
                 return input.length > 0
             }
         },
-        {
-            name: "make_alias",
-            type: "input",
-            message: `${chalk.greenBright('[Auxiliary]')} Create alias? y or N:`,
-            validate: (input) => {
-                return input.length > 0
-            }
-        },
     ])
 
     // create config directory
@@ -116,16 +108,30 @@ export const setup = async () => {
     await Bun.write(`${configPath}/.env`, `OPENAI_API_KEY=${openai_key}\nGEMINI_API_KEY=${gemini_key}\nSERPER_API_KEY=${serper_api_key}`);
 
     // create alias
-    if (make_alias === 'y') {
-        const currentPath = parse(process.argv[1]).dir
-        const allConfigs = ['.bashrc', '.bash_profile', '.zshrc']
+    if (process.platform !== 'win32') {
+        const { make_alias } = await inquirer.prompt([
+            {
+                name: "make_alias",
+                type: "input",
+                default: 'n',
+                message: `${chalk.greenBright('[Auxiliary]')} Create alias? y or N:`,
+                validate: (input) => {
+                    return input.length > 0
+                },
+            },
+        ])
 
-        for (const config of allConfigs) {
-            const path = `${process.env.HOME}/${config}`
-            const file = Bun.file(path)
+        if (make_alias.toLowerCase() === 'y') {
+            const currentPath = parse(process.argv[1]).dir
+            const allConfigs = ['.bashrc', '.bash_profile', '.zshrc']
 
-            if (await file.exists()) {
-                appendFile(path, `\n\nalias auxiliary='bun ${currentPath}/index.ts'\nalias aux='bun ${currentPath}/index.ts'`)
+            for (const config of allConfigs) {
+                const path = `${process.env.HOME}/${config}`
+                const file = Bun.file(path)
+
+                if (await file.exists()) {
+                    appendFile(path, `\n\nalias auxiliary='bun ${currentPath}/index.ts'\nalias aux='bun ${currentPath}/index.ts'`)
+                }
             }
         }
     }
